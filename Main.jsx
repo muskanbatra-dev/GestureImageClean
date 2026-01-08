@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
-import Animated, { useSharedValue, withTiming } from 'react-native-reanimated';
-import { cancelAnimation } from 'react-native-reanimated';
+import React, { useState, useCallback, useMemo } from 'react';
+import { View, StyleSheet, Image, Button } from 'react-native';
+import Animated, {
+  useSharedValue,
+  withTiming,
+  cancelAnimation,
+} from 'react-native-reanimated';
+
 import ImagePickerButton from './components/ImagePickerButton';
 import ResetButton from './components/ResetButton';
 import ImageCanvas from './components/ImageCanvas';
-
-const { width, height } = Dimensions.get('window');
+import UploadImage from './assests/upload_image.png';
 
 export default function Main() {
   const [imageUri, setImageUri] = useState(null);
@@ -21,7 +24,7 @@ export default function Main() {
 
   const isResetting = useSharedValue(false);
 
-  const reset = () => {
+  const reset = useCallback(() => {
     isResetting.value = true;
 
     cancelAnimation(scale);
@@ -38,26 +41,47 @@ export default function Main() {
     savedScale.value = 1;
     savedTranslateX.value = 0;
     savedTranslateY.value = 0;
-  };
+  }, []);
+
+  const handlePickImage = useCallback(uri => {
+    setImageUri(uri);
+  }, []);
+
+ 
+  const removeImage = useCallback(() => {
+    reset();
+    setImageUri(null);
+  }, [reset]);
+
+  const imageCanvas = useMemo(() => {
+    if (!imageUri) return null;
+
+    return (
+      <ImageCanvas
+        imageUri={imageUri}
+        scale={scale}
+        translateX={translateX}
+        translateY={translateY}
+        savedScale={savedScale}
+        savedTranslateX={savedTranslateX}
+        savedTranslateY={savedTranslateY}
+      />
+    );
+  }, [imageUri]);
 
   return (
     <View style={styles.container}>
       <View style={styles.buttons}>
-        <ImagePickerButton onPick={setImageUri} onReset={reset} />
+        <ImagePickerButton onPick={handlePickImage} onReset={reset} />
         <ResetButton onReset={reset} />
+        {imageUri && (
+          <Button title="Remove" color="#ff4444" onPress={removeImage} />
+        )}
       </View>
 
-      {imageUri && (
-        <ImageCanvas
-          imageUri={imageUri}
-          scale={scale}
-          translateX={translateX}
-          translateY={translateY}
-          savedScale={savedScale}
-          savedTranslateX={savedTranslateX}
-          savedTranslateY={savedTranslateY}
-        />
-      )}
+      {!imageUri && <Image source={UploadImage} style={styles.placeholder} />}
+
+      {imageCanvas}
     </View>
   );
 }
@@ -69,5 +93,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  placeholder: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
   },
 });
