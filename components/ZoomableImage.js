@@ -4,12 +4,7 @@ import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 
 const { width, height } = Dimensions.get('window');
 
-export default function ZoomableImage({
-  imageUri,
-  scale,
-  translateX,
-  translateY,
-}) {
+const ZoomableImage = ({ imageUri, scale, translateX, translateY }) => {
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [
       { translateX: translateX.value },
@@ -27,8 +22,8 @@ export default function ZoomableImage({
       />
     </Animated.View>
   );
-}
-
+};
+export default React.memo(ZoomableImage);
 const styles = StyleSheet.create({
   container: { width, height },
   image: { width: '100%', height: '100%' },

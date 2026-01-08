@@ -47,27 +47,10 @@ export default function Main() {
     setImageUri(uri);
   }, []);
 
- 
   const removeImage = useCallback(() => {
     reset();
     setImageUri(null);
   }, [reset]);
-
-  const imageCanvas = useMemo(() => {
-    if (!imageUri) return null;
-
-    return (
-      <ImageCanvas
-        imageUri={imageUri}
-        scale={scale}
-        translateX={translateX}
-        translateY={translateY}
-        savedScale={savedScale}
-        savedTranslateX={savedTranslateX}
-        savedTranslateY={savedTranslateY}
-      />
-    );
-  }, [imageUri]);
 
   return (
     <View style={styles.container}>
@@ -81,7 +64,17 @@ export default function Main() {
 
       {!imageUri && <Image source={UploadImage} style={styles.placeholder} />}
 
-      {imageCanvas}
+      {imageUri && (
+        <ImageCanvas
+          imageUri={imageUri}
+          scale={scale}
+          translateX={translateX}
+          translateY={translateY}
+          savedScale={savedScale}
+          savedTranslateX={savedTranslateX}
+          savedTranslateY={savedTranslateY}
+        />
+      )}
     </View>
   );
 }

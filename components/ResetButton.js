@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { Button } from 'react-native';
 import Toast from 'react-native-toast-message';
 
-export default function ResetButton({ onReset }) {
+const ResetButton = ({ onReset }) => {
   const handleReset = useCallback(() => {
     onReset();
     Toast.show({
@@ -13,4 +13,6 @@ export default function ResetButton({ onReset }) {
   }, [onReset]);
 
   return <Button title="Reset" onPress={handleReset} />;
-}
+};
+
+export default React.memo(ResetButton);

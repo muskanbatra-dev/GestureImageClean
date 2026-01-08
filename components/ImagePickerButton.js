@@ -2,8 +2,7 @@ import React, { useCallback } from 'react';
 import { Button } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
-
-export default function ImagePickerButton({ onPick, onReset }) {
+const ImagePickerButton = ({ onPick, onReset }) => {
   const pickImage = useCallback(async () => {
     try {
       const result = await launchImageLibrary({ mediaType: 'photo' });
@@ -29,4 +28,6 @@ export default function ImagePickerButton({ onPick, onReset }) {
   }, [onPick, onReset]);
 
   return <Button title="Pick Image" onPress={pickImage} />;
-}
+};
+
+export default React.memo(ImagePickerButton);
